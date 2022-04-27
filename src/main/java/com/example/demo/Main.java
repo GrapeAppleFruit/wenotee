@@ -19,7 +19,7 @@ public class Main extends JFrame implements Runnable{
 
         panel = new JFXPanel();
         add(panel);
-
+        
         Platform.runLater(() -> {
             WebView view = new WebView();
             view.getEngine().load("https://www.google.com/");
