@@ -72,7 +72,7 @@ jlinkZip {
 
 jar {
     manifest {
-        attributes "Main": "com.example.demo"
+        attributes["Main-Class"] = "Main"
     }
 
     from {
