@@ -17,11 +17,14 @@ import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
@@ -46,34 +49,43 @@ public class Main extends JFrame implements Runnable{
         
         Platform.runLater(() -> {
             view = new WebView();
+            
+            // loading home
             view.getEngine().load(homeAddress);
             
-            int width = 32, height = width;
-            // back
+            int buttonMinWidth = 32, buttonMinHeight = buttonMinWidth;
+            
+            // back button
         	backButton = new Button("<-");
-        	backButton.setMinSize(width, height);
+        	backButton.setMinSize(buttonMinWidth, buttonMinHeight);
         	backButton.setOnMouseClicked(event -> goBack());
+        	//backButton.setTranslateX(height)
         	
-        	// home
+        	// home button
         	homeButton = new Button("Home");
-        	homeButton.setMinSize(width, height);
+        	homeButton.setMinSize(buttonMinWidth, buttonMinHeight);
         	homeButton.setOnMouseClicked(event -> goHome());
         	
-            // forward
+            // forward button
         	forwardButton = new Button("->");
-        	forwardButton.setMinSize(width, height);
+        	forwardButton.setMinSize(buttonMinWidth, buttonMinHeight);
         	forwardButton.setOnMouseClicked(event -> goForward());
             
+        	// stack pane containing browser & back,home and forward buttons
             StackPane stackPane = new StackPane(view, backButton,homeButton, forwardButton);
-            
             StackPane.setAlignment(backButton, Pos.TOP_LEFT);
             StackPane.setAlignment(homeButton, Pos.TOP_CENTER);
             StackPane.setAlignment(forwardButton, Pos.TOP_RIGHT);
-        	//forwardButton.setLayoutX(width);
+        	
+            // note pad pane
+            StackPane notePadPane = createNotePadPane();
             
-            panel.setScene(new Scene(stackPane));
-//          panel.setScene(new Scene(view));
-            
+            // split pane which fills the scene
+        	SplitPane splitPane = new SplitPane(notePadPane, stackPane);
+        	splitPane.setDividerPositions(0.5f);
+        	
+        	// scene
+            panel.setScene(new Scene(splitPane));
         });
     }
 
@@ -81,6 +93,9 @@ public class Main extends JFrame implements Runnable{
         SwingUtilities.invokeLater(new Main());
     }
     
+    
+    
+    // -- browser: back, home, forward buttons --
     
     public void goHome() {
     	view.getEngine().load(homeAddress);
@@ -106,5 +121,12 @@ public class Main extends JFrame implements Runnable{
 			history.go(entryList.size() > 1 && currentIndex < entryList.size() - 1 ? 1 : 0);
 		});
 	}
+	
+    // -- note pad pane --
+	
+    public StackPane createNotePadPane() {
+    	// placeholder pane
+    	return new StackPane();
+    }
 
 }
