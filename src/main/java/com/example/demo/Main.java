@@ -17,45 +17,63 @@ import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
 
 public class Main extends JFrame implements Runnable{
 
-    private WebEngine webEngine;
+    private WebView view;
     private JFXPanel panel;
-    private Button backButton, forwardButton;
+    private Button backButton,homeButton, forwardButton;
+    
+    private final String homeAddress = "https://www.google.com/";
 
     public void run() {
         setTitle("Wenote Browser");
         setVisible(true);
         setBounds(0,0,1950, 1080);
 
-        
-        // back
-    	backButton = new Button("->");
-    	backButton.setMaxSize(32, 32);
-    	backButton.setOnMouseClicked(event -> goBack());
-        // forward
-    	forwardButton = new Button("->");
-    	forwardButton.setMaxSize(32, 32);
-    	forwardButton.setOnMouseClicked(event -> goForward());
-        
-        
         panel = new JFXPanel();
         add(panel);
        
         
         Platform.runLater(() -> {
-            WebView view = new WebView();
-            view.getEngine().load("https://www.google.com/");
+            view = new WebView();
+            view.getEngine().load(homeAddress);
             
-            panel.setScene(new Scene(view));
+            int width = 32, height = width;
+            // back
+        	backButton = new Button("<-");
+        	backButton.setMinSize(width, height);
+        	backButton.setOnMouseClicked(event -> goBack());
+        	
+        	// home
+        	homeButton = new Button("Home");
+        	homeButton.setMinSize(width, height);
+        	homeButton.setOnMouseClicked(event -> goHome());
+        	
+            // forward
+        	forwardButton = new Button("->");
+        	forwardButton.setMinSize(width, height);
+        	forwardButton.setOnMouseClicked(event -> goForward());
+            
+            StackPane stackPane = new StackPane(view, backButton,homeButton, forwardButton);
+            
+            StackPane.setAlignment(backButton, Pos.TOP_LEFT);
+            StackPane.setAlignment(homeButton, Pos.TOP_CENTER);
+            StackPane.setAlignment(forwardButton, Pos.TOP_RIGHT);
+        	//forwardButton.setLayoutX(width);
+            
+            panel.setScene(new Scene(stackPane));
+//          panel.setScene(new Scene(view));
+            
         });
     }
 
@@ -64,11 +82,13 @@ public class Main extends JFrame implements Runnable{
     }
     
     
-
+    public void goHome() {
+    	view.getEngine().load(homeAddress);
+    }
 
 	public void goBack() {
 
-		final WebHistory history = webEngine.getHistory();
+		final WebHistory history = view.getEngine().getHistory();
 		ObservableList<WebHistory.Entry> entryList = history.getEntries();
 		int currentIndex = history.getCurrentIndex();
 
@@ -78,7 +98,7 @@ public class Main extends JFrame implements Runnable{
 	}
 
 	public void goForward() {
-		final WebHistory history = webEngine.getHistory();
+		final WebHistory history = view.getEngine().getHistory();
 		ObservableList<WebHistory.Entry> entryList = history.getEntries();
 		int currentIndex = history.getCurrentIndex();
 
