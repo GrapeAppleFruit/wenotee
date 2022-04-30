@@ -1,7 +1,9 @@
 package com.example.demo;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.Painter;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -24,8 +26,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
@@ -53,30 +60,36 @@ public class Main extends JFrame implements Runnable{
             // loading home
             view.getEngine().load(homeAddress);
             
-            int buttonMinWidth = 32, buttonMinHeight = buttonMinWidth;
+            int buttonMinWidth = 32, buttonMinHeight = 24;
             
             // back button
         	backButton = new Button("<-");
-        	backButton.setMinSize(buttonMinWidth, buttonMinHeight);
         	backButton.setOnMouseClicked(event -> goBack());
-        	//backButton.setTranslateX(height)
+        	backButton.setPrefSize(buttonMinWidth, buttonMinHeight);
         	
         	// home button
         	homeButton = new Button("Home");
-        	homeButton.setMinSize(buttonMinWidth, buttonMinHeight);
         	homeButton.setOnMouseClicked(event -> goHome());
+        	homeButton.setPrefSize(buttonMinWidth * 2, buttonMinHeight);
         	
             // forward button
         	forwardButton = new Button("->");
-        	forwardButton.setMinSize(buttonMinWidth, buttonMinHeight);
         	forwardButton.setOnMouseClicked(event -> goForward());
+        	forwardButton.setPrefSize(buttonMinWidth, buttonMinHeight);
             
-        	// stack pane containing browser & back,home and forward buttons
-            StackPane stackPane = new StackPane(view, backButton,homeButton, forwardButton);
-            StackPane.setAlignment(backButton, Pos.TOP_LEFT);
-            StackPane.setAlignment(homeButton, Pos.TOP_CENTER);
-            StackPane.setAlignment(forwardButton, Pos.TOP_RIGHT);
+        	// button container
+        	HBox buttonContainer = new HBox(backButton, homeButton, forwardButton);
+        	int spacing = 2;
+        	//buttonContainer.setBackground(Background.fill(Paint.valueOf("red")));
+        	buttonContainer.setMaxSize(
+        			backButton.getPrefWidth() + forwardButton.getPrefWidth() + homeButton.getPrefWidth(), 
+        			buttonMinHeight + spacing);
         	
+        	// stack pane containing browser & buttons
+            StackPane stackPane = new StackPane(view, buttonContainer);
+            StackPane.setAlignment(buttonContainer, Pos.TOP_LEFT);
+            
+            
             // note pad pane
             StackPane notePadPane = createNotePadPane();
             
