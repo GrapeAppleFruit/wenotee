@@ -119,6 +119,7 @@ public class Main extends JFrame implements Runnable{
     public StackPane createNotePadPane() {
     	// placeholder pane
     	return new StackPane();
+	    system.out.createPanelNow();
     }
 
 }
